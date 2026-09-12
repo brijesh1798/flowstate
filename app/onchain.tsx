@@ -117,7 +117,7 @@ export function PoolsSection() {
 }
 
 /* ---------- Swap widget ---------- */
-export function SwapWidget() {
+export function SwapWidget({ onConnectClick }: { onConnectClick?: () => void }) {
   const { address, chainId } = useAccount();
   const onArc = chainId === arcTestnet.id;
   const [tokenIn, setTokenIn] = useState<TokenSymbol>("USDC");
@@ -233,7 +233,11 @@ export function SwapWidget() {
         <p className="onchainNotice small">This pair has no verified on-chain pool yet — only USDC/EURC is confirmed.</p>
       )}
 
-      <button className="primary swapButton" disabled={phase !== "idle" || !found || tokenIn === tokenOut} onClick={swap}>
+      <button
+        className="primary swapButton"
+        disabled={phase !== "idle" || (!!address && (!found || tokenIn === tokenOut))}
+        onClick={!address ? onConnectClick : swap}
+      >
         {phase === "approving" ? "Approving…" : phase === "swapping" ? "Confirm in wallet…" : !address ? "Connect wallet to swap" : "Swap"}
       </button>
       {errorMsg && <p className="swapStatus" style={{ color: "#ff9a8a" }}>{errorMsg}</p>}
