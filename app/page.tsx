@@ -80,7 +80,7 @@ export default function Home() {
             <h2>Swap</h2>
           </div>
         </div>
-        <SwapWidget />
+        <SwapWidget onConnectClick={() => setWalletOpen(true)} />
       </section>
 
       <section className="section activity" id="activity">
