@@ -1,7 +1,6 @@
 "use client";
 import { useState } from "react";
-import { useAccount, useDisconnect, useSwitchChain } from "wagmi";
-import { useAppKit } from "@reown/appkit/react";
+import { useAccount, useConnect, useDisconnect, useSwitchChain } from "wagmi";
 import { arcTestnet } from "./config/chains";
 
 export function shortAddr(addr: string) {
@@ -24,17 +23,10 @@ export function chainName(chainId: number | undefined) {
   return CHAIN_NAMES[chainId] || `Chain ${chainId}`;
 }
 
-/**
- * Wraps wagmi + Reown AppKit into the same shape the UI previously got from
- * the hand-rolled EIP-6963 hook, so the rest of the app barely had to change.
- * The actual "pick a wallet" UI (MetaMask, Coinbase Wallet, Rabby, WalletConnect
- * for everything else) is Reown AppKit's own modal — opened via `open()`.
- */
 export function useWalletKit() {
   const { address, isConnected, chainId } = useAccount();
   const { disconnect } = useDisconnect();
-  const { switchChain, error: switchError, isPending: switching } = useSwitchChain();
-  const { open } = useAppKit();
+  const { switchChain, error: switchError } = useSwitchChain();
 
   const isWrongNetwork = isConnected && chainId !== arcTestnet.id;
 
@@ -43,15 +35,77 @@ export function useWalletKit() {
     isConnected,
     chainId,
     isWrongNetwork,
-    switching,
     switchError: switchError?.message ?? null,
     switchToArc: () => switchChain({ chainId: arcTestnet.id }),
     disconnect: () => disconnect(),
-    openConnectModal: () => open({ view: "Connect" }),
   };
 }
 
-/* ---------- Connected account button + dropdown ---------- */
+export function WalletModal({ open, onClose }: { open: boolean; onClose: () => void }) {
+  const { connectors, connect, isPending, error } = useConnect();
+  if (!open) return null;
+
+  const unique = connectors.filter((c, i) => connectors.findIndex((c2) => c2.id === c.id) === i);
+
+  return (
+    <div className="walletOverlay" onClick={onClose}>
+      <div className="walletModal" onClick={(e) => e.stopPropagation()}>
+        <div className="walletModalHead">
+          <span>Connect a wallet</span>
+          <button className="walletClose" onClick={onClose} aria-label="Close">×</button>
+        </div>
+        {unique.length === 0 ? (
+          <div className="walletEmpty">
+            <p>No EVM wallet extension detected in this browser.</p>
+            <div className="walletSuggested">
+              <a href="https://metamask.io/download/" target="_blank" rel="noreferrer" className="walletRow">
+                <span className="walletIconFallback">M</span>
+                <span>MetaMask</span>
+                <span className="walletGo">Install ↗</span>
+              </a>
+              <a href="https://www.coinbase.com/wallet/downloads" target="_blank" rel="noreferrer" className="walletRow">
+                <span className="walletIconFallback">C</span>
+                <span>Coinbase Wallet</span>
+                <span className="walletGo">Install ↗</span>
+              </a>
+              <a href="https://rabby.io/" target="_blank" rel="noreferrer" className="walletRow">
+                <span className="walletIconFallback">R</span>
+                <span>Rabby Wallet</span>
+                <span className="walletGo">Install ↗</span>
+              </a>
+            </div>
+          </div>
+        ) : (
+          <div className="walletList">
+            {unique.map((c) => (
+              <button
+                key={c.id}
+                className="walletRow"
+                disabled={isPending}
+                onClick={() => {
+                  connect({ connector: c, chainId: arcTestnet.id });
+                  onClose();
+                }}
+              >
+                {c.icon ? (
+                  // eslint-disable-next-line @next/next/no-img-element
+                  <img src={c.icon} alt={c.name} className="walletIcon" />
+                ) : (
+                  <span className="walletIconFallback">{c.name[0]}</span>
+                )}
+                <span>{c.name}</span>
+                <span className="walletGo">Connect</span>
+              </button>
+            ))}
+          </div>
+        )}
+        {error && <div className="walletError">{error.message}</div>}
+        <p className="walletFoot">By connecting, you agree to Flowstate's terms and acknowledge the risks of interacting with a testnet dApp.</p>
+      </div>
+    </div>
+  );
+}
+
 export function WalletButton({
   address,
   chainId,
