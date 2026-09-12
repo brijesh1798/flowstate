@@ -19,11 +19,12 @@ export function BalancesPanel() {
   const { address, isConnected, chainId } = useAccount();
   const onArc = chainId === arcTestnet.id;
 
+  const balanceContracts: readonly unknown[] = TOKEN_SYMBOLS.flatMap((sym) => [
+    { address: TOKENS[sym].address, abi: ERC20_ABI, functionName: "balanceOf", args: [address ?? ZERO], chainId: arcTestnet.id },
+    { address: TOKENS[sym].address, abi: ERC20_ABI, functionName: "decimals", chainId: arcTestnet.id },
+  ]);
   const { data, isLoading } = useReadContracts({
-    contracts: TOKEN_SYMBOLS.flatMap((sym) => [
-      { address: TOKENS[sym].address, abi: ERC20_ABI, functionName: "balanceOf", args: [address ?? ZERO], chainId: arcTestnet.id },
-      { address: TOKENS[sym].address, abi: ERC20_ABI, functionName: "decimals", chainId: arcTestnet.id },
-    ]),
+    contracts: balanceContracts as never,
     query: { enabled: !!address && onArc },
   });
 
@@ -54,15 +55,16 @@ export function PoolsSection() {
   const pairAddress = DEX.pairs["USDC/EURC"];
   const enabled = !!pairAddress;
 
+  const poolContracts: readonly unknown[] = enabled
+    ? [
+        { address: pairAddress as `0x${string}`, abi: UNISWAP_V2_PAIR_ABI, functionName: "getReserves", chainId: arcTestnet.id },
+        { address: pairAddress as `0x${string}`, abi: UNISWAP_V2_PAIR_ABI, functionName: "token0", chainId: arcTestnet.id },
+        { address: pairAddress as `0x${string}`, abi: UNISWAP_V2_PAIR_ABI, functionName: "totalSupply", chainId: arcTestnet.id },
+        { address: pairAddress as `0x${string}`, abi: UNISWAP_V2_PAIR_ABI, functionName: "balanceOf", args: [address ?? ZERO], chainId: arcTestnet.id },
+      ]
+    : [];
   const { data } = useReadContracts({
-    contracts: enabled
-      ? [
-          { address: pairAddress as `0x${string}`, abi: UNISWAP_V2_PAIR_ABI, functionName: "getReserves", chainId: arcTestnet.id },
-          { address: pairAddress as `0x${string}`, abi: UNISWAP_V2_PAIR_ABI, functionName: "token0", chainId: arcTestnet.id },
-          { address: pairAddress as `0x${string}`, abi: UNISWAP_V2_PAIR_ABI, functionName: "totalSupply", chainId: arcTestnet.id },
-          { address: pairAddress as `0x${string}`, abi: UNISWAP_V2_PAIR_ABI, functionName: "balanceOf", args: [address ?? ZERO], chainId: arcTestnet.id },
-        ]
-      : [],
+    contracts: poolContracts as never,
     query: { enabled },
   });
 
