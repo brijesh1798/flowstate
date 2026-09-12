@@ -1,12 +1,12 @@
 "use client";
 import { useState } from "react";
-import { useWallet, WalletModal, WalletButton, chainName } from "./wallet";
+import { useWalletKit, WalletModal, WalletButton, chainName } from "./wallet";
 import { BalancesPanel, PoolsSection, SwapWidget, ActivitySection } from "./onchain";
 
 export default function Home() {
   const [open, setOpen] = useState(false);
   const [walletOpen, setWalletOpen] = useState(false);
-  const { providers, provider, address, chainId, connecting, error, connect, disconnect, switchToArc } = useWallet();
+  const { address, chainId, disconnect, switchToArc } = useWalletKit();
 
   return (
     <main>
@@ -32,17 +32,7 @@ export default function Home() {
           {open ? "×" : "☰"}
         </button>
       </header>
-      <WalletModal
-        open={walletOpen}
-        onClose={() => setWalletOpen(false)}
-        providers={providers}
-        connecting={connecting}
-        error={error}
-        onConnect={(d) => {
-          connect(d);
-          setWalletOpen(false);
-        }}
-      />
+      <WalletModal open={walletOpen} onClose={() => setWalletOpen(false)} />
       {open && (
         <div className="mobileNav">
           <a href="#network">Network</a>
@@ -70,7 +60,7 @@ export default function Home() {
             View pools ›
           </button>
         </div>
-        <BalancesPanel provider={provider} address={address} chainId={chainId} />
+        <BalancesPanel />
       </section>
 
       <section className="section" id="pools">
@@ -80,7 +70,7 @@ export default function Home() {
             <h2>Pools</h2>
           </div>
         </div>
-        <PoolsSection provider={provider} />
+        <PoolsSection />
       </section>
 
       <section className="section" id="swap">
@@ -90,7 +80,7 @@ export default function Home() {
             <h2>Swap</h2>
           </div>
         </div>
-        <SwapWidget provider={provider} address={address} chainId={chainId} />
+        <SwapWidget />
       </section>
 
       <section className="section activity" id="activity">
@@ -103,7 +93,7 @@ export default function Home() {
             <span className="live"></span> on-chain
           </span>
         </div>
-        <ActivitySection provider={provider} />
+        <ActivitySection />
       </section>
 
       <section className="cta">
