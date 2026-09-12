@@ -1,25 +1,23 @@
-import { cookieStorage, createStorage, http } from "wagmi";
-import { WagmiAdapter } from "@reown/appkit-adapter-wagmi";
+import { createConfig, http, cookieStorage, createStorage } from "wagmi";
+import { injected } from "wagmi/connectors";
 import { arcTestnet } from "./chains";
 
-export const projectId = process.env.NEXT_PUBLIC_WALLETCONNECT_PROJECT_ID ?? "";
-
-if (!projectId && typeof window !== "undefined") {
-  // Non-fatal: injected wallets (MetaMask/Coinbase/Rabby) still work without this.
-  // WalletConnect-based mobile wallets need a real project id from https://cloud.reown.com
-  console.warn("NEXT_PUBLIC_WALLETCONNECT_PROJECT_ID is not set — WalletConnect will be unavailable.");
-}
-
-export const networks = [arcTestnet];
-
-export const wagmiAdapter = new WagmiAdapter({
+/**
+ * WalletConnect/Reown was dropped after a persistent dependency conflict
+ * (@reown/appkit-adapter-wagmi expected an incompatible @wagmi/core internal
+ * export) kept breaking the production build. This config still covers the
+ * main ask — MetaMask, Coinbase Wallet, Rabby and any other browser-extension
+ * EVM wallet — via wagmi's built-in EIP-6963 multi-wallet auto-discovery.
+ * WalletConnect (for mobile/QR) can be added back later once a compatible
+ * version combo is confirmed.
+ */
+export const wagmiConfig = createConfig({
+  chains: [arcTestnet],
+  connectors: [injected()],
   storage: createStorage({ storage: cookieStorage }),
   ssr: true,
-  projectId,
-  networks,
+  multiInjectedProviderDiscovery: true,
   transports: {
     [arcTestnet.id]: http(arcTestnet.rpcUrls.default.http[0]),
   },
 });
-
-export const wagmiConfig = wagmiAdapter.wagmiConfig;
