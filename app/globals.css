@@ -45,3 +45,42 @@
 .swapFlip{align-self:center;width:32px;height:32px;border-radius:50%;background:#1a1c1e;border:1px solid #27292b;color:#b8ff6a;font-size:14px}
 .swapButton{width:100%;margin-top:8px;justify-content:center}
 .swapStatus{font-size:12px;color:#c9cbc4;margin:4px 0 0}
+
+/* --- Magic: entrance motion + glow --- */
+@keyframes fadeUp{from{opacity:0;transform:translateY(18px)}to{opacity:1;transform:translateY(0)}}
+@keyframes pulseGlow{0%,100%{box-shadow:0 0 8px #b8ff6a}50%{box-shadow:0 0 20px 4px #b8ff6a}}
+@keyframes driftGlow{0%,100%{transform:translate(0,0) scale(1)}50%{transform:translate(-3%,2%) scale(1.08)}}
+
+header{animation:fadeUp .6s ease both}
+.hero{position:relative;overflow:hidden}
+.hero::before{content:"";position:absolute;top:-220px;left:50%;width:780px;height:780px;transform:translateX(-50%);background:radial-gradient(circle,rgba(184,255,106,.16),rgba(184,255,106,0) 65%);pointer-events:none;animation:driftGlow 14s ease-in-out infinite;z-index:0}
+.hero>*{position:relative;z-index:1}
+.eyebrow{animation:fadeUp .6s ease .05s both}
+.hero h1{animation:fadeUp .7s ease .12s both}
+.hero p{animation:fadeUp .7s ease .2s both}
+.actions{animation:fadeUp .7s ease .28s both}
+.balancesRow{animation:fadeUp .7s ease .36s both}
+.section{animation:fadeUp .6s ease both}
+.section:nth-of-type(1){animation-delay:.1s}
+.section:nth-of-type(2){animation-delay:.16s}
+.section:nth-of-type(3){animation-delay:.22s}
+.section:nth-of-type(4){animation-delay:.28s}
+
+.live{animation:pulseGlow 2.2s ease-in-out infinite}
+
+.primary{transition:transform .18s ease,box-shadow .18s ease}
+.primary:hover{transform:translateY(-1px);box-shadow:0 6px 22px -6px rgba(184,255,106,.35)}
+.secondary,.connect,.ghost,.filter{transition:border-color .18s ease,transform .18s ease}
+.secondary:hover,.connect:hover,.ghost:hover,.filter:hover{border-color:#b8ff6a;transform:translateY(-1px)}
+
+.balanceCard,.swapWidget,.walletModal,.walletDropdown{transition:border-color .2s ease,transform .2s ease}
+.balanceCard:hover{border-color:#3c4a2e;transform:translateY(-2px)}
+.table .row{transition:background .18s ease}
+.table .row:hover{background:rgba(184,255,106,.035)}
+
+.swapFlip{transition:transform .25s ease,border-color .2s ease}
+.swapFlip:hover{transform:rotate(180deg);border-color:#b8ff6a}
+
+@media(prefers-reduced-motion:reduce){
+  *,*::before,*::after{animation-duration:.001ms!important;animation-iteration-count:1!important;transition-duration:.001ms!important}
+}
