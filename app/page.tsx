@@ -45,6 +45,11 @@ export default function Home() {
       )}
 
       <section className="hero" id="network">
+        <div className="sparkle">
+          <span className="layer1"></span>
+          <span className="layer2"></span>
+        </div>
+        <div className="aura"></div>
         <div className="eyebrow">
           <span className="live"></span> ARC TESTNET · LIVE NETWORK
         </div>
