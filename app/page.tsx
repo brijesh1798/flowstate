@@ -1,7 +1,7 @@
 "use client";
 import { useState } from "react";
 import { useWalletKit, WalletModal, WalletButton, chainName } from "./wallet";
-import { BalancesPanel, PoolsSection, SwapWidget, ActivitySection } from "./onchain";
+import { BalancesPanel, PoolsSection, SwapWidget, LiquidityWidget, ActivitySection } from "./onchain";
 
 export default function Home() {
   const [open, setOpen] = useState(false);
@@ -19,6 +19,7 @@ export default function Home() {
           <a href="#network">Network</a>
           <a href="#pools">Pools</a>
           <a href="#swap">Swap</a>
+          <a href="#liquidity">Liquidity</a>
           <a href="#activity">Activity</a>
         </nav>
         {address ? (
@@ -38,6 +39,7 @@ export default function Home() {
           <a href="#network">Network</a>
           <a href="#pools">Pools</a>
           <a href="#swap">Swap</a>
+          <a href="#liquidity">Liquidity</a>
           <a href="#activity">Activity</a>
         </div>
       )}
@@ -71,6 +73,16 @@ export default function Home() {
           </div>
         </div>
         <PoolsSection />
+      </section>
+
+      <section className="section" id="liquidity">
+        <div className="sectionHead">
+          <div>
+            <small>PROVIDE</small>
+            <h2>Liquidity</h2>
+          </div>
+        </div>
+        <LiquidityWidget />
       </section>
 
       <section className="section" id="swap">
