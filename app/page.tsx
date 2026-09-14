@@ -1,6 +1,6 @@
 "use client";
 import Link from "next/link";
-import { BalancesPanel, PoolsSection } from "./onchain";
+import { BalancesPanel, PoolsSection, ActivitySection } from "./onchain";
 
 export default function Home() {
   return (
@@ -39,6 +39,19 @@ export default function Home() {
           </div>
         </div>
         <PoolsSection />
+      </section>
+
+      <section className="section activity" id="activity">
+        <div className="sectionHead">
+          <div>
+            <small>NETWORK ACTIVITY</small>
+            <h2>Recent swaps</h2>
+          </div>
+          <span className="liveText">
+            <span className="live"></span> on-chain
+          </span>
+        </div>
+        <ActivitySection />
       </section>
 
       <section className="cta">
