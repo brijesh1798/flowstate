@@ -5,6 +5,7 @@ import { Header } from "./header";
 import { IntroSplash } from "./intro-splash";
 
 export const metadata = { title: "Flowstate — Arc Liquidity Intelligence", description: "USDC liquidity and DEX intelligence for Arc Testnet." };
+export const viewport = { width: "device-width", initialScale: 1 };
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
