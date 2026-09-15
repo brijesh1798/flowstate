@@ -49,12 +49,12 @@ export function WalletModal({ open, onClose }: { open: boolean; onClose: () => v
   const detectedNames = unique.map((c) => c.name.toLowerCase());
 
   const MORE_WALLETS = [
-    { name: "MetaMask", url: "https://metamask.io/download/" },
-    { name: "Coinbase Wallet", url: "https://www.coinbase.com/wallet/downloads" },
-    { name: "Rabby Wallet", url: "https://rabby.io/" },
-    { name: "OKX Wallet", url: "https://www.okx.com/web3" },
-    { name: "Bitget Wallet", url: "https://web3.bitget.com/en/wallet-download" },
-    { name: "Trust Wallet", url: "https://trustwallet.com/download" },
+    { name: "MetaMask", url: "https://metamask.io/download/", color: "#F6851B" },
+    { name: "Coinbase Wallet", url: "https://www.coinbase.com/wallet/downloads", color: "#0052FF" },
+    { name: "Rabby Wallet", url: "https://rabby.io/", color: "#8697FF" },
+    { name: "OKX Wallet", url: "https://www.okx.com/web3", color: "#000000" },
+    { name: "Bitget Wallet", url: "https://web3.bitget.com/en/wallet-download", color: "#00F0FF" },
+    { name: "Trust Wallet", url: "https://trustwallet.com/download", color: "#3375BB" },
   ].filter((w) => !detectedNames.some((d) => d.includes(w.name.toLowerCase().split(" ")[0])));
 
   return (
@@ -99,7 +99,9 @@ export function WalletModal({ open, onClose }: { open: boolean; onClose: () => v
             <div className="walletSuggested">
               {MORE_WALLETS.map((w) => (
                 <a key={w.name} href={w.url} target="_blank" rel="noreferrer" className="walletRow">
-                  <span className="walletIconFallback">{w.name[0]}</span>
+                  <span className="walletIconFallback" style={{ background: w.color, color: w.color === "#000000" ? "#fff" : "#0b0c0d" }}>
+                    {w.name[0]}
+                  </span>
                   <span>{w.name}</span>
                   <span className="walletGo">Install ↗</span>
                 </a>
