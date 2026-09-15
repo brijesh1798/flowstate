@@ -15,6 +15,31 @@ function errMsg(err: unknown, fallback: string) {
   return e?.shortMessage || e?.message || fallback;
 }
 
+/* ---------- Slim live stats ticker (real on-chain data) ---------- */
+export function TickerBar() {
+  const pairAddress = DEX.pairs["USDC/EURC"];
+  const { data } = useReadContract({
+    address: pairAddress as `0x${string}`,
+    abi: UNISWAP_V2_PAIR_ABI,
+    functionName: "getReserves",
+    chainId: arcTestnet.id,
+    query: { enabled: !!pairAddress },
+  });
+  const reserves = data as readonly [bigint, bigint, number] | undefined;
+  const tvl = reserves ? formatUnits(reserves[0] + reserves[1], 6) : null;
+
+  return (
+    <div className="tickerBar">
+      <span className="tickerDot" />
+      <span>ARC TESTNET</span>
+      <span className="tickerSep">·</span>
+      <span>CHAIN 5042002</span>
+      <span className="tickerSep">·</span>
+      <span>USDC/EURC POOL {tvl ? `~${Number(tvl).toLocaleString()} TVL` : "…"}</span>
+    </div>
+  );
+}
+
 /* ---------- Balances panel ---------- */
 export function BalancesPanel() {
   const { address, isConnected, chainId } = useAccount();
