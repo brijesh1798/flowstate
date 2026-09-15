@@ -46,6 +46,16 @@ export function WalletModal({ open, onClose }: { open: boolean; onClose: () => v
   if (!open) return null;
 
   const unique = connectors.filter((c, i) => connectors.findIndex((c2) => c2.id === c.id) === i);
+  const detectedNames = unique.map((c) => c.name.toLowerCase());
+
+  const MORE_WALLETS = [
+    { name: "MetaMask", url: "https://metamask.io/download/" },
+    { name: "Coinbase Wallet", url: "https://www.coinbase.com/wallet/downloads" },
+    { name: "Rabby Wallet", url: "https://rabby.io/" },
+    { name: "OKX Wallet", url: "https://www.okx.com/web3" },
+    { name: "Bitget Wallet", url: "https://web3.bitget.com/en/wallet-download" },
+    { name: "Trust Wallet", url: "https://trustwallet.com/download" },
+  ].filter((w) => !detectedNames.some((d) => d.includes(w.name.toLowerCase().split(" ")[0])));
 
   return (
     <div className="walletOverlay" onClick={onClose}>
@@ -54,28 +64,8 @@ export function WalletModal({ open, onClose }: { open: boolean; onClose: () => v
           <span>Connect a wallet</span>
           <button className="walletClose" onClick={onClose} aria-label="Close">×</button>
         </div>
-        {unique.length === 0 ? (
-          <div className="walletEmpty">
-            <p>No EVM wallet extension detected in this browser.</p>
-            <div className="walletSuggested">
-              <a href="https://metamask.io/download/" target="_blank" rel="noreferrer" className="walletRow">
-                <span className="walletIconFallback">M</span>
-                <span>MetaMask</span>
-                <span className="walletGo">Install ↗</span>
-              </a>
-              <a href="https://www.coinbase.com/wallet/downloads" target="_blank" rel="noreferrer" className="walletRow">
-                <span className="walletIconFallback">C</span>
-                <span>Coinbase Wallet</span>
-                <span className="walletGo">Install ↗</span>
-              </a>
-              <a href="https://rabby.io/" target="_blank" rel="noreferrer" className="walletRow">
-                <span className="walletIconFallback">R</span>
-                <span>Rabby Wallet</span>
-                <span className="walletGo">Install ↗</span>
-              </a>
-            </div>
-          </div>
-        ) : (
+
+        {unique.length > 0 && (
           <div className="walletList">
             {unique.map((c) => (
               <button
@@ -99,6 +89,25 @@ export function WalletModal({ open, onClose }: { open: boolean; onClose: () => v
             ))}
           </div>
         )}
+
+        {MORE_WALLETS.length > 0 && (
+          <div className="walletEmpty">
+            {unique.length === 0 && <p>No EVM wallet extension detected in this browser.</p>}
+            <p className="small" style={{ fontSize: 11, color: "#7c7f79", margin: unique.length ? "14px 0 8px" : "0 0 8px" }}>
+              {unique.length ? "OTHER WALLETS" : "GET A WALLET"}
+            </p>
+            <div className="walletSuggested">
+              {MORE_WALLETS.map((w) => (
+                <a key={w.name} href={w.url} target="_blank" rel="noreferrer" className="walletRow">
+                  <span className="walletIconFallback">{w.name[0]}</span>
+                  <span>{w.name}</span>
+                  <span className="walletGo">Install ↗</span>
+                </a>
+              ))}
+            </div>
+          </div>
+        )}
+
         {error && <div className="walletError">{error.message}</div>}
         <p className="walletFoot">By connecting, you agree to Flowstate's terms and acknowledge the risks of interacting with a testnet dApp.</p>
       </div>
