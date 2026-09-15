@@ -109,3 +109,8 @@ header{animation:fadeUp .6s ease both}
 @keyframes introSparkIn{to{opacity:1}}
 .introWord{font-size:15px;letter-spacing:.5em;color:#f0f0eb;font-family:sans-serif;font-weight:600;opacity:0;animation:fadeUp .5s ease .15s forwards}
 .introSub{font-size:11px;letter-spacing:.2em;color:#8f928c;font-family:sans-serif;opacity:0;animation:fadeUp .5s ease .35s forwards}
+
+/* --- Live stats ticker bar --- */
+.tickerBar{display:flex;align-items:center;gap:10px;padding:9px 6vw;background:#101213;border-bottom:1px solid #1c1e20;font-size:11px;letter-spacing:.08em;color:#9a9c98;overflow-x:auto;white-space:nowrap}
+.tickerDot{width:6px;height:6px;border-radius:50%;background:#b8ff6a;box-shadow:0 0 6px #b8ff6a;flex-shrink:0}
+.tickerSep{color:#3c3e3f}
