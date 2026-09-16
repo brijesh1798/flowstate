@@ -49,12 +49,12 @@ export function WalletModal({ open, onClose }: { open: boolean; onClose: () => v
   const detectedNames = unique.map((c) => c.name.toLowerCase());
 
   const MORE_WALLETS = [
-    { name: "MetaMask", url: "https://metamask.io/download/", color: "#F6851B" },
-    { name: "Coinbase Wallet", url: "https://www.coinbase.com/wallet/downloads", color: "#0052FF" },
-    { name: "Rabby Wallet", url: "https://rabby.io/", color: "#8697FF" },
-    { name: "OKX Wallet", url: "https://www.okx.com/web3", color: "#000000" },
-    { name: "Bitget Wallet", url: "https://web3.bitget.com/en/wallet-download", color: "#00F0FF" },
-    { name: "Trust Wallet", url: "https://trustwallet.com/download", color: "#3375BB" },
+    { name: "MetaMask", url: "https://metamask.io/download/", domain: "metamask.io" },
+    { name: "Coinbase Wallet", url: "https://www.coinbase.com/wallet/downloads", domain: "coinbase.com" },
+    { name: "Rabby Wallet", url: "https://rabby.io/", domain: "rabby.io" },
+    { name: "OKX Wallet", url: "https://www.okx.com/web3", domain: "okx.com" },
+    { name: "Bitget Wallet", url: "https://web3.bitget.com/en/wallet-download", domain: "bitget.com" },
+    { name: "Trust Wallet", url: "https://trustwallet.com/download", domain: "trustwallet.com" },
   ].filter((w) => !detectedNames.some((d) => d.includes(w.name.toLowerCase().split(" ")[0])));
 
   return (
@@ -99,9 +99,8 @@ export function WalletModal({ open, onClose }: { open: boolean; onClose: () => v
             <div className="walletSuggested">
               {MORE_WALLETS.map((w) => (
                 <a key={w.name} href={w.url} target="_blank" rel="noreferrer" className="walletRow">
-                  <span className="walletIconFallback" style={{ background: w.color, color: w.color === "#000000" ? "#fff" : "#0b0c0d" }}>
-                    {w.name[0]}
-                  </span>
+                  {/* eslint-disable-next-line @next/next/no-img-element */}
+                  <img src={`https://www.google.com/s2/favicons?domain=${w.domain}&sz=64`} alt={w.name} className="walletIcon" />
                   <span>{w.name}</span>
                   <span className="walletGo">Install ↗</span>
                 </a>
