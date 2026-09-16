@@ -1,6 +1,6 @@
 "use client";
 import { useEffect, useState } from "react";
-import Link from "next/link";
+import { useRouter } from "next/navigation";
 import { useAccount, useReadContract, useReadContracts, useWriteContract, usePublicClient } from "wagmi";
 import { parseUnits, formatUnits, parseAbiItem } from "viem";
 import { arcTestnet } from "./config/chains";
@@ -77,6 +77,7 @@ export function BalancesPanel() {
 
 /* ---------- Pools section: real reserves + your LP share ---------- */
 export function PoolsSection() {
+  const router = useRouter();
   const { address } = useAccount();
   const pairAddress = DEX.pairs["USDC/EURC"];
   const enabled = !!pairAddress;
@@ -117,7 +118,16 @@ export function PoolsSection() {
 
   return (
     <div className="table">
-      <Link href="/liquidity" className="row" style={{ cursor: "pointer" }}>
+      <div
+        className="row"
+        role="button"
+        tabIndex={0}
+        style={{ cursor: "pointer" }}
+        onClick={() => router.push("/liquidity")}
+        onKeyDown={(e) => {
+          if (e.key === "Enter") router.push("/liquidity");
+        }}
+      >
         <div className="pair">
           <div className="coin">$</div>
           <strong>USDC / EURC</strong>
@@ -135,7 +145,14 @@ export function PoolsSection() {
           <b>{lpBalance !== undefined && lpBalance > 0n ? `${share.toFixed(4)}%` : "—"}</b>
         </div>
         <span>↗</span>
-      </Link>
+      </div>
+      <button
+        className="secondary"
+        style={{ marginTop: 12 }}
+        onClick={() => router.push("/liquidity")}
+      >
+        Manage liquidity ›
+      </button>
       <p className="onchainEmpty small" style={{ padding: "10px 4px 0" }}>
         Tap the pool to add or remove liquidity.
       </p>
